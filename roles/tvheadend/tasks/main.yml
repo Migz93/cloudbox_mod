@@ -34,7 +34,7 @@
       - "/mnt:/mnt"
       - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings
     devices: 
-      - "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"  
+      - "/dev/dri:/dev/dri"  
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
