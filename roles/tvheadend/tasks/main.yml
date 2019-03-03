@@ -12,7 +12,7 @@
 - name: "Check if '/dev/dri' exists"
   stat:
     path: "/dev/dri"
-register: dev_dri    
+  register: dev_dri    
     
 - name: Create tvheadend directories
   file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
