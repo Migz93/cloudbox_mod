@@ -12,8 +12,8 @@
 - name: "Check if '/dev/dri' exists"
   stat:
     path: "/dev/dri"
-  register: dev_dri    
-    
+  register: dev_dri
+
 - name: Create tvheadend directories
   file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
   with_items:
@@ -32,9 +32,9 @@
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/tvheadend:/config"
       - "/mnt:/mnt"
-      - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings
-    devices: 
-      - "/dev/dri:/dev/dri"  
+      - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings"
+    devices:
+      - "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
