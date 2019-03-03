@@ -33,7 +33,8 @@
       - "/opt/tvheadend:/config"
       - "/mnt:/mnt"
       - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings
-    devices: "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"  
+    devices: 
+      - "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"  
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
