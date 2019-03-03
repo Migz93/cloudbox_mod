@@ -1,0 +1,43 @@
+- name: "Setting CloudFlare DNS Record"
+  include_role:
+    name: cloudflare
+  vars:
+    subdomain: tvheadend
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: tvheadend
+    state: absent
+
+- name: "Check if '/dev/dri' exists"
+  stat:
+    path: "/dev/dri"
+register: dev_dri    
+    
+- name: Create tvheadend directories
+  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
+  with_items:
+    - /opt/tvheadend
+
+- name: Create and start container
+  docker_container:
+    name: tvheadend
+    image: linuxserver/tvheadend
+    pull: yes
+    env:
+      PUID: "{{uid}}"
+      PGID: "{{gid}}"
+      TZ: "Europe/London"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/opt/tvheadend:/config"
+      - "/mnt:/mnt"
+      - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings
+    devices: "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"  
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: host
+    purge_networks: yes
+    restart_policy: always
+    state: started
