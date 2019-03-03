@@ -6,7 +6,7 @@ Blank Template to add custom Ansible roles to Cloudbox.
 1. Clone this repo:
 
     ```bash
-    git clone https://github.com/Cloudbox/cloudbox_mod.git ~/cloudbox_mod
+    git clone https://github.com/Migz93/cloudbox_mod.git ~/cloudbox_mod
     ```
 
 1. CD into the `cloudbox_mod` folder:
