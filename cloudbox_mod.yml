@@ -8,3 +8,4 @@
   roles:
     - { role: pre_tasks }
     - { role: tvheadend, tags: ['tvheadend'] }
+    - { role: unifi_controller, tags: ['unifi_controller'] }
