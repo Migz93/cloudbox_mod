@@ -9,3 +9,4 @@
     - { role: pre_tasks }
     - { role: tvheadend, tags: ['tvheadend'] }
     - { role: filebot, tags: ['filebot'] }
+    - { role: unifi_controller, tags: ['unifi_controller'] }
