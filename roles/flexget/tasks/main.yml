@@ -11,7 +11,7 @@
 
 - name: Create and start container
   docker_container:
-    name: unifi
+    name: flexget
     image: cpoppema/docker-flexget
     pull: yes
     env:
