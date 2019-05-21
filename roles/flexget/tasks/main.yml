@@ -21,7 +21,7 @@
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/flexget:/config"
-      - "/mnt/downloads:/downloads"
+      - "/mnt/local/downloads:/downloads"
       - "/mnt:/mnt"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
