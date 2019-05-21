@@ -1,0 +1,34 @@
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: flexget
+    state: absent
+
+- name: Create flexget directories
+  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
+  with_items:
+    - /opt/flexget
+
+- name: Create and start container
+  docker_container:
+    name: unifi
+    image: cpoppema/docker-flexget
+    pull: yes
+    env:
+      PUID: "{{uid}}"
+      PGID: "{{gid}}"
+      TZ: "Europe/Jersey"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/opt/flexget:/config"
+      - "/mnt/downloads:/downloads"
+      - "/mnt:/mnt"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - flexget
+    purge_networks: yes
+    restart_policy: always
+    state: started
