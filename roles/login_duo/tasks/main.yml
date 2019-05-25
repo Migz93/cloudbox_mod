@@ -65,14 +65,14 @@
 - name: sshd_config | Set PermitTunnel 
   lineinfile:
       path: "/etc/ssh/sshd_config"
-      regexp: 'PermitTunnel  yes|no)'
+      regexp: 'PermitTunnel (yes|no)'
       line: "PermitTunnel no"
       state: present
       
 - name: sshd_config | Set AllowTcpForwarding  
   lineinfile:
       path: "/etc/ssh/sshd_config"
-      regexp: 'AllowTcpForwarding   yes|no)'
+      regexp: 'AllowTcpForwarding (yes|no)'
       line: "AllowTcpForwarding  no"
       state: present
         
