@@ -7,10 +7,10 @@
   apt_repository:
     repo: 'deb http://pkg.duosecurity.com/Ubuntu bionic main'
     state: present
-    filename: duo-unix
+    filename: duosecurity
     update_cache: yes
 
-- name: install duo-unix
+- name: install duo_unix
   apt:
     name: duo-unix
     state: present
@@ -49,6 +49,11 @@
         ; enables autopush verification
         autopush = yes
       state: present
+      
+- name: Copy file with owner and permissions
+  copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.backup
     
 - name: sshd_config | Set PubkeyAuthentication
   lineinfile:

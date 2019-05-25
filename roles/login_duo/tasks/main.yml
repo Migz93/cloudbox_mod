@@ -1,0 +1,83 @@
+- name: add duo-unix apt-key
+  apt_key:
+    url: https://duo.com/APT-GPG-KEY-DUO
+    state: present
+ 
+- name: add duo-unix apt repository - Ubuntu 18.04
+  apt_repository:
+    repo: 'deb http://pkg.duosecurity.com/Ubuntu bionic main'
+    state: present
+    filename: duosecurity
+    update_cache: yes
+
+- name: install duo-unix
+  apt:
+    name: duo-unix
+    state: present
+    update_cache: yes
+
+- name: Settings | Wait for pam_duo.conf to be created
+  wait_for:
+    path: "/etc/duo/login_duo.conf"
+    state: present
+
+- name: pam_duo.conf | Set Integration Key
+  lineinfile:
+    path: "/etc/duo/login_duo.conf"
+    regexp: '^ikey \s?='
+    line: "ikey = {{ duo.ikey }}"
+    state: present
+    
+- name: pam_duo.conf | Set Secret Key
+  lineinfile:
+    path: "/etc/duo/login_duo.conf"
+    regexp: '^skey \s?='
+    line: "skey = {{ duo.skey }}"
+    state: present
+    
+- name: pam_duo.conf | Set API Hostname
+  lineinfile:
+    path: "/etc/duo/login_duo.conf"
+    regexp: '^host \s?='
+    line: "host = {{ duo.host }}"
+    state: present
+    
+- name: pam_duo.conf | Add autopush
+  blockinfile:
+      path: "/etc/duo/login_duo.conf"
+      block: |
+        ; enables autopush verification
+        autopush = yes
+      state: present
+    
+- name: Backup sshd_config
+  copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.backup
+    
+- name: sshd_config | Set ForceCommand
+  lineinfile:
+      path: "/etc/ssh/sshd_config"
+      regexp: '(?=ForceCommand).*'
+      line: "ForceCommand /usr/sbin/login_duo"
+      state: present
+
+- name: sshd_config | Set PermitTunnel 
+  lineinfile:
+      path: "/etc/ssh/sshd_config"
+      regexp: 'PermitTunnel  yes|no)'
+      line: "PermitTunnel no"
+      state: present
+      
+- name: sshd_config | Set AllowTcpForwarding  
+  lineinfile:
+      path: "/etc/ssh/sshd_config"
+      regexp: 'AllowTcpForwarding   yes|no)'
+      line: "AllowTcpForwarding  no"
+      state: present
+        
+- name: restart ssh service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: ssh
