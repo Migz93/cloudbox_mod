@@ -53,64 +53,53 @@
 - name: sshd_config | Set PubkeyAuthentication
   lineinfile:
     path: "/etc/ssh/sshd_config"
-    regexp: '^PubkeyAuthentication \s?='
+    regexp: 'PubkeyAuthentication (yes|no)'
     line: "PubkeyAuthentication yes"
     state: present
 
 - name: sshd_config | Set PasswordAuthentication
   lineinfile:
     path: "/etc/ssh/sshd_config"
-    regexp: '^PasswordAuthentication \s?='
+    regexp: 'PasswordAuthentication (yes|no)'
     line: "PasswordAuthentication no"
     state: present
 
 - name: sshd_config | Set ChallengeResponseAuthentication
   lineinfile:
     path: "/etc/ssh/sshd_config"
-    regexp: '^ChallengeResponseAuthentication \s?='
+    regexp: 'ChallengeResponseAuthentication (yes|no)'
     line: "ChallengeResponseAuthentication yes"
     state: present
     
 - name: sshd_config | Set AuthenticationMethods
   lineinfile:
       path: "/etc/ssh/sshd_config"
+      regexp: '(?=AuthenticationMethods).*'
       line: "AuthenticationMethods publickey,keyboard-interactive"
-      insertafter: "PasswordAuthentication"
       state: present
 
 - name: sshd_config | Set UseDNS
   lineinfile:
       path: "/etc/ssh/sshd_config"
+      regexp: 'UseDNS (yes|no)'
       line: "UseDNS no"
-      insertafter: 'UsePAM'
       state: present
-      
+    
 - name: sshd | Comment "@include common-auth"
   lineinfile:
     path: "/etc/pam.d/sshd"
-    regexp: '^@include common-auth'
+    regexp: '@include common-auth'
     line: "#@include common-auth"
     state: present
-    
+
 - name: sshd | Add pam_duo.so
-  lineinfile:
+  blockinfile:
       path: "/etc/pam.d/sshd"
-      line: "auth  [success=1 default=ignore] /lib64/security/pam_duo.so"
-      insertafter: "#@include common-auth"
-      state: present
-      
-- name: sshd | Add pam_deny.so
-  lineinfile:
-      path: "/etc/pam.d/sshd"
-      line: "auth  requisite pam_deny.so"
-      insertafter: "auth  [success=1 default=ignore] /lib64/security/pam_duo.so"
-      state: present
-      
-- name: sshd | Set pam_permit.so
-  lineinfile:
-      path: "/etc/pam.d/sshd"
-      line: "auth  required pam_permit.so"
-      insertafter: "auth  requisite pam_deny.so"
+      block: |
+        auth  [success=1 default=ignore] /lib64/security/pam_duo.so
+        auth  requisite pam_deny.so
+        auth  required pam_permit.so
+      insertafter: '@include common-auth'
       state: present
       
 - name: restart ssh service
