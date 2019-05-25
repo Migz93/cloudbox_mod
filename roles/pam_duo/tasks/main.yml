@@ -50,7 +50,7 @@
         autopush = yes
       state: present
       
-- name: Copy file with owner and permissions
+- name: Create backup of sshd_config
   copy:
     src: /etc/ssh/sshd_config
     dest: /etc/ssh/sshd_config.backup
@@ -90,6 +90,11 @@
       line: "UseDNS no"
       state: present
     
+- name: Create backup of sshd
+  copy:
+    src: /etc/pam.d/sshd
+    dest: /etc/pam.d/sshd.backup
+
 - name: sshd | Comment "@include common-auth"
   lineinfile:
     path: "/etc/pam.d/sshd"
