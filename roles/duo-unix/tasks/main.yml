@@ -21,26 +21,34 @@
     path: "/etc/duo/pam_duo.conf"
     state: present
 
-- name: pam_duo.conf | Set Intergration Key
+- name: pam_duo.conf | Set Integration Key
   lineinfile:
     path: "/etc/duo/pam_duo.conf"
     regexp: '^ikey \s?='
-    line: "ikey = {{ ikey }}"
+    line: "ikey = {{ duo.ikey }}"
     state: present
     
 - name: pam_duo.conf | Set Secret Key
   lineinfile:
     path: "/etc/duo/pam_duo.conf"
     regexp: '^skey \s?='
-    line: "skey = {{ skey }}"
+    line: "skey = {{ duo.skey }}"
     state: present
     
 - name: pam_duo.conf | Set API Hostname
   lineinfile:
     path: "/etc/duo/pam_duo.conf"
     regexp: '^host \s?='
-    line: "host = {{ host }}"
+    line: "host = {{ duo.host }}"
     state: present
+    
+- name: pam_duo.conf | Add autopush
+  blockinfile:
+      path: "/etc/duo/pam_duo.conf"
+      block: |
+        ; enables autopush verification
+        autopush = yes
+      state: present
     
 - name: sshd_config | Set PubkeyAuthentication
   lineinfile:
