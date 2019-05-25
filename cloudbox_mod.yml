@@ -11,3 +11,4 @@
     - { role: filebot, tags: ['filebot'] }
     - { role: unifi_controller, tags: ['unifi_controller'] }
     - { role: flexget, tags: ['flexget'] }
+    - { role: duo-unix, tags: ['duo-unix'] }

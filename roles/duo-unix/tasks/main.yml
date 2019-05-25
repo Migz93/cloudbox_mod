@@ -1,0 +1,112 @@
+- name: add duo-unix apt-key
+  apt_key:
+    url: https://duo.com/APT-GPG-KEY-DUO
+    state: present
+ 
+- name: add duo-unix apt repository - Ubuntu 18.04
+  apt_repository:
+    repo: 'deb http://pkg.duosecurity.com/Ubuntu bionic main'
+    state: present
+    filename: duo-unix
+    update_cache: yes
+
+- name: install duo-unix
+  apt:
+    name: duo-unix
+    state: present
+    update_cache: yes
+
+- name: Settings | Wait for pam_duo.conf to be created
+  wait_for:
+    path: "/etc/duo/pam_duo.conf"
+    state: present
+
+- name: pam_duo.conf | Set Intergration Key
+  lineinfile:
+    path: "/etc/duo/pam_duo.conf"
+    regexp: '^ikey \s?='
+    line: "ikey = {{ ikey }}"
+    state: present
+    
+- name: pam_duo.conf | Set Secret Key
+  lineinfile:
+    path: "/etc/duo/pam_duo.conf"
+    regexp: '^skey \s?='
+    line: "skey = {{ skey }}"
+    state: present
+    
+- name: pam_duo.conf | Set API Hostname
+  lineinfile:
+    path: "/etc/duo/pam_duo.conf"
+    regexp: '^host \s?='
+    line: "host = {{ host }}"
+    state: present
+    
+- name: sshd_config | Set PubkeyAuthentication
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regexp: '^PubkeyAuthentication \s?='
+    line: "PubkeyAuthentication yes"
+    state: present
+
+- name: sshd_config | Set PasswordAuthentication
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regexp: '^PasswordAuthentication \s?='
+    line: "PasswordAuthentication no"
+    state: present
+
+- name: sshd_config | Set ChallengeResponseAuthentication
+  lineinfile:
+    path: "/etc/ssh/sshd_config"
+    regexp: '^ChallengeResponseAuthentication \s?='
+    line: "ChallengeResponseAuthentication yes"
+    state: present
+    
+- name: sshd_config | Set AuthenticationMethods
+  lineinfile:
+      path: "/etc/ssh/sshd_config"
+      line: "AuthenticationMethods publickey,keyboard-interactive"
+      insertafter: "PasswordAuthentication"
+      state: present
+
+- name: sshd_config | Set UseDNS
+  lineinfile:
+      path: "/etc/ssh/sshd_config"
+      line: "UseDNS no"
+      insertafter: 'UsePAM'
+      state: present
+      
+- name: sshd | Comment "@include common-auth"
+  lineinfile:
+    path: "/etc/pam.d/sshd"
+    regexp: '^@include common-auth'
+    line: "#@include common-auth"
+    state: present
+    
+- name: sshd | Add pam_duo.so
+  lineinfile:
+      path: "/etc/pam.d/sshd"
+      line: "auth  [success=1 default=ignore] /lib64/security/pam_duo.so"
+      insertafter: "#@include common-auth"
+      state: present
+      
+- name: sshd | Add pam_deny.so
+  lineinfile:
+      path: "/etc/pam.d/sshd"
+      line: "auth  requisite pam_deny.so"
+      insertafter: "auth  [success=1 default=ignore] /lib64/security/pam_duo.so"
+      state: present
+      
+- name: sshd | Set pam_permit.so
+  lineinfile:
+      path: "/etc/pam.d/sshd"
+      line: "auth  required pam_permit.so"
+      insertafter: "auth  requisite pam_deny.so"
+      state: present
+      
+- name: restart ssh service
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: ssh
