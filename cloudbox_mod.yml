@@ -3,7 +3,7 @@
   vars_files:
     - settings.yml
     - accounts.yml
-     - ['~/cloudbox/accounts.yml', '~/cloudbox/defaults/accounts.yml.default']
+    - ['~/cloudbox/accounts.yml', '~/cloudbox/defaults/accounts.yml.default']
     - ['~/cloudbox/settings.yml', '~/cloudbox/defaults/settings.yml.default']
     - ['~/cloudbox/adv_settings.yml', '~/cloudbox/defaults/adv_settings.yml.default']
   roles:
