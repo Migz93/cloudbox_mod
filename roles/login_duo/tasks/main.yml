@@ -3,12 +3,13 @@
     url: https://duo.com/APT-GPG-KEY-DUO
     state: present
  
-- name: add duo-unix apt repository - Ubuntu 18.04
+- name: Add Ubuntu Duo Repositories
   apt_repository:
-    repo: 'deb http://pkg.duosecurity.com/Ubuntu bionic main'
+    repo: "{{ item }}"
     state: present
-    filename: duosecurity
-    update_cache: yes
+  with_items:
+    - 'deb http://pkg.duosecurity.com/Ubuntu {{ ansible_distribution_release }} main'
+  when: ansible_distribution == 'Ubuntu'
 
 - name: install duo-unix
   apt:
