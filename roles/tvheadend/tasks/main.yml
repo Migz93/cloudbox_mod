@@ -37,8 +37,7 @@
       - "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
-    network_mode:
-      - "host"
+    network_mode: host
     purge_networks: yes
     restart_policy: always
     state: started

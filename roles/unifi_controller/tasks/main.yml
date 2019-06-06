@@ -31,7 +31,7 @@
     labels:
       "com.github.cloudbox.cloudbox_managed": "true"
     networks:
-      - name: cloudbox
+      - name: bridge
         aliases:
           - unifi
     purge_networks: yes
