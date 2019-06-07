@@ -2,13 +2,13 @@
   apt_key:
     url: https://duo.com/APT-GPG-KEY-DUO
     state: present
- 
+
 - name: Add Ubuntu Duo Repositories
   apt_repository:
     repo: "{{ item }}"
     state: present
   with_items:
-    - 'deb http://pkg.duosecurity.com/Ubuntu {{ ansible_distribution_release }} main'
+    - 'deb [arch=amd64] http://pkg.duosecurity.com/Ubuntu {{ ansible_distribution_release }} main'
   when: ansible_distribution == 'Ubuntu'
 
 - name: install duo_unix
@@ -28,21 +28,21 @@
     regexp: '^ikey \s?='
     line: "ikey = {{ duo.ikey }}"
     state: present
-    
+
 - name: pam_duo.conf | Set Secret Key
   lineinfile:
     path: "/etc/duo/pam_duo.conf"
     regexp: '^skey \s?='
     line: "skey = {{ duo.skey }}"
     state: present
-    
+
 - name: pam_duo.conf | Set API Hostname
   lineinfile:
     path: "/etc/duo/pam_duo.conf"
     regexp: '^host \s?='
     line: "host = {{ duo.host }}"
     state: present
-    
+
 - name: pam_duo.conf | Add autopush
   blockinfile:
       path: "/etc/duo/pam_duo.conf"
@@ -50,12 +50,12 @@
         ; enables autopush verification
         autopush = yes
       state: present
-      
+
 - name: Create backup of sshd_config
   copy:
     src: /etc/ssh/sshd_config
     dest: /etc/ssh/sshd_config.backup
-    
+
 - name: sshd_config | Set PubkeyAuthentication
   lineinfile:
     path: "/etc/ssh/sshd_config"
@@ -76,7 +76,7 @@
     regexp: 'ChallengeResponseAuthentication (yes|no)'
     line: "ChallengeResponseAuthentication yes"
     state: present
-    
+
 - name: sshd_config | Set AuthenticationMethods
   lineinfile:
       path: "/etc/ssh/sshd_config"
@@ -90,7 +90,7 @@
       regexp: 'UseDNS (yes|no)'
       line: "UseDNS no"
       state: present
-    
+
 - name: Create backup of sshd
   copy:
     src: /etc/pam.d/sshd
@@ -112,7 +112,7 @@
         auth  required pam_permit.so
       insertafter: '@include common-auth'
       state: present
-      
+
 - name: restart ssh service
   systemd:
     state: restarted
