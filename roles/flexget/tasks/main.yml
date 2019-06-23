@@ -5,7 +5,7 @@
     state: absent
 
 - name: Create flexget directories
-  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
+  file: "path={{item}} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/flexget
 
@@ -15,8 +15,8 @@
     image: cpoppema/docker-flexget
     pull: yes
     env:
-      PUID: "{{uid}}"
-      PGID: "{{gid}}"
+      PUID: "{{  uid  }}"
+      PGID: "{{  gid  }}"
       TZ: "Europe/Jersey"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"

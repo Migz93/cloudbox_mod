@@ -5,7 +5,7 @@
     state: absent
 
 - name: Create unifi directories
-  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
+  file: "path={{item}} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/unifi
 
@@ -23,8 +23,8 @@
       - "8843:8843"
       - "8880:8880"
     env:
-      PUID: "{{uid}}"
-      PGID: "{{gid}}"
+      PUID: "{{  uid  }}"
+      PGID: "{{  gid  }}"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/unifi:/config"

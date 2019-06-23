@@ -15,7 +15,7 @@
   register: dev_dri
 
 - name: Create tvheadend directories
-  file: "path={{item}} state=directory mode=0775 owner={{user}} group={{user}}"
+  file: "path={{item}} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
   with_items:
     - /opt/tvheadend
 
@@ -25,14 +25,14 @@
     image: linuxserver/tvheadend
     pull: yes
     env:
-      PUID: "{{uid}}"
-      PGID: "{{gid}}"
+      PUID: "{{ uid }}"
+      PGID: "{{ gid }}"
       TZ: "Europe/London"
     volumes:
       - "/etc/localtime:/etc/localtime:ro"
       - "/opt/tvheadend:/config"
       - "/mnt:/mnt"
-      - "/mnt/unionfs/Media/TV-Recorded/TVHeadend:/recordings"
+      - "/mnt/unionfs/Media/:/recordings"
     devices:
       - "{{ '/dev/dri:/dev/dri' if dev_dri.stat.exists == True | default(false) else omit }}"
     labels:
