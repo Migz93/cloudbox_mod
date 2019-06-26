@@ -1,0 +1,33 @@
+
+- name: Stop and remove any existing container
+  docker_container:
+    name: webgrabplus
+    state: absent
+
+- name: Create webgrabplus directories
+  file: "path={{item}} state=directory mode=0775 owner={{ user.name }} group={{ user.name }}"
+  with_items:
+    - /opt/webgrabplus
+
+- name: Create and start container
+  docker_container:
+    name: webgrabplus
+    image: linuxserver/webgrabplus
+    pull: yes
+    env:
+      PUID: "{{  uid  }}"
+      PGID: "{{  gid  }}"
+      TZ: "Europe/Jersey"
+    volumes:
+      - "/etc/localtime:/etc/localtime:ro"
+      - "/opt/webgrabplus/config:/config"
+      - "/opt/webgrabplus/data:/data"
+    labels:
+      "com.github.cloudbox.cloudbox_managed": "true"
+    networks:
+      - name: cloudbox
+        aliases:
+          - webgrabplus
+    purge_networks: yes
+    restart_policy: always
+    state: started
