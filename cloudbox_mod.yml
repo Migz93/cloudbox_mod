@@ -15,3 +15,4 @@
     - { role: pam_duo, tags: ['pam_duo'] }
     - { role: login_duo, tags: ['login_duo'] }
     - { role: webgrabplus, tags: ['webgrabplus'] }
+    - { role: grafana, tags: ['grafana'] }
