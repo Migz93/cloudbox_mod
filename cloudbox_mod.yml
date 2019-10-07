@@ -10,6 +10,7 @@
     - { role: filebot, tags: ['filebot'] }
     - { role: flexget, tags: ['flexget'] }
     - { role: grafana, tags: ['grafana'] }
+    - { role: guacamole, tags: ['guacamole'] }
     - { role: login_duo, tags: ['login_duo'] }
     - { role: pam_duo, tags: ['pam_duo'] }
     - { role: pre_tasks }
