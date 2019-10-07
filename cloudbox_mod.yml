@@ -7,12 +7,13 @@
     - ['~/cloudbox/settings.yml', '~/cloudbox/defaults/settings.yml.default']
     - ['~/cloudbox/adv_settings.yml', '~/cloudbox/defaults/adv_settings.yml.default']
   roles:
-    - { role: pre_tasks }
-    - { role: tvheadend, tags: ['tvheadend'] }
     - { role: filebot, tags: ['filebot'] }
-    - { role: unifi_controller, tags: ['unifi_controller'] }
     - { role: flexget, tags: ['flexget'] }
-    - { role: pam_duo, tags: ['pam_duo'] }
-    - { role: login_duo, tags: ['login_duo'] }
-    - { role: webgrabplus, tags: ['webgrabplus'] }
     - { role: grafana, tags: ['grafana'] }
+    - { role: login_duo, tags: ['login_duo'] }
+    - { role: pam_duo, tags: ['pam_duo'] }
+    - { role: pre_tasks }
+    - { role: telegraf, tags: ['telegraf'] }
+    - { role: tvheadend, tags: ['tvheadend'] }
+    - { role: unifi_controller, tags: ['unifi_controller'] }
+    - { role: webgrabplus, tags: ['webgrabplus'] }
