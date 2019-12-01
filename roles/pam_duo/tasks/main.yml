@@ -1,6 +1,6 @@
 - name: add duo-unix apt-key
   apt_key:
-    url: https://duo.com/APT-GPG-KEY-DUO
+    url: https://duo.com/DUO-GPG-PUBLIC-KEY.asc
     state: present
 
 - name: Add Ubuntu Duo Repositories
